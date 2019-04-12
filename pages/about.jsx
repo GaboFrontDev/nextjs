@@ -30,16 +30,12 @@ export default class extends React.Component {
 						color: black;
 					}
 				`}</style>
-				<style jsx global>
-					{`
-						body {
-							margin: 0;
-							background: #354446;
-							background-size: cover;
-							background-repeat: no-repeat;
-						}
-					`}
-				</style>
+				<style jsx global>{`
+					body {
+						margin: 0;
+						background: #354446;
+					}
+				`}</style>
 			</div>
 		);
 	}

@@ -20,30 +20,6 @@ export default class extends React.Component {
 		return { channel, audio_clips, channels };
 	}
 
-	getSeriesContent() {
-		return (
-			<div className="channels">
-				{this.props.channels.map(channel => (
-					<div className="channel">
-						<h5>{channel.title}</h5>
-					</div>
-				))}
-			</div>
-		);
-	}
-
-	getAudiosContent() {
-		return (
-			<div className="audio_clips">
-				{this.props.audio_clips.map(clip => (
-					<div className="clip">
-						<h5>{clip.title}</h5>
-					</div>
-				))}
-			</div>
-		);
-	}
-
 	render() {
 		let { channel, audio_clips, channels } = this.props;
 		let clipsContainer = <div>No se encontraron clips </div>;
@@ -65,53 +41,77 @@ export default class extends React.Component {
 				{channelsContainer}
 
 				<style jsx>{`
-		  header{
-			color: #fff;
-			padding 15px;
-			background: #8576ca;
-			text-align: center;
-		  }
-		  .audio_clips { 
-			display: grid;
-			grid-gap: 25px;
-			padding: 15px;
-			grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-		  }
+					header{
+						color: #fff;
+						padding 15px;
+						background: #8576ca;
+						text-align: center;
+					}
+					.audio_clips { 
+						display: grid;
+						grid-gap: 25px;
+						padding: 15px;
+						grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+					}
 
-		  .clip {
-			display: block;
-			border-radius: 3px;
-			box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
-			margin-bottom: 0.5em;
-		  }
+					.clip {
+						display: block;
+						border-radius: 3px;
+						box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+						margin-bottom: 0.5em;
+					}
 
-		  .channel img{
-			width: 100%;
-		  }
+					.channel img{
+						width: 100%;
+					}
 
-		  h1 { 
-			  font-weight: 600;
-			  margin: 15px
-		  }
+					h1 { 
+						font-weight: 600;
+						margin: 15px
+					}
 
-		  h2 {
-			padding: 5px;
-			margin: 15px;
-			font-size: 0.9em;
-			text-align: center;
-		  }
-		  p {
-			margin: 15px;
-			font-size: 18px;
-			text-align: left;
-		  }
-		`}</style>
+					h2 {
+						padding: 5px;
+						margin: 15px;
+						font-size: 0.9em;
+						text-align: center;
+					}
+					p {
+						margin: 15px;
+						font-size: 18px;
+						text-align: left;
+					}
+					`}</style>
 				<style jsx global>{`
 					body {
 						margin: 0;
 						font-family: system-ui;
+						background: #354446;
 					}
 				`}</style>
+			</div>
+		);
+	}
+	getSeriesContent() {
+		return (
+			<div className="channels">
+				{this.props.channels.map(channel => (
+					<div className="channel">
+						<h5>{channel.title}</h5>
+					</div>
+				))}
+			</div>
+		);
+	}
+
+	getAudiosContent() {
+		return (
+			<div className="audio_clips">
+				{this.props.audio_clips.map(clip => (
+					<div className="clip">
+						<h5>{clip.title}</h5>
+					</div>
+				))}
 			</div>
 		);
 	}
