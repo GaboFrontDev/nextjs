@@ -1,118 +1,88 @@
-import "isomorphic-fetch";
+import ChannelGrid from "../components/ChannelGrid";
+import PodcastGrid from "../components/PodcastGrid";
+import Layout from "../components/Layout";
+
 export default class extends React.Component {
 	static async getInitialProps({ query }) {
-		let channelId = query.id;
-		let [reqChannel, reqAudio, reqSeries] = await Promise.all([
-			fetch(`https://api.audioboom.com/channels/${channelId}`),
-			fetch(`https://api.audioboom.com/channels/${channelId}/audio_clips`),
-			fetch(`https://api.audioboom.com/channels/${channelId}/child_channels`)
-		]);
-		let {
-			body: { channel }
-		} = await reqChannel.json();
-		let {
-			body: { audio_clips }
-		} = await reqAudio.json();
+		let idChannel = query.id;
 
-		let {
-			body: { channels }
-		} = await reqSeries.json();
-		return { channel, audio_clips, channels };
+		let [reqChannel, reqSeries, reqAudios] = await Promise.all([
+			fetch(`https://api.audioboom.com/channels/${idChannel}`),
+			fetch(
+				`https://api.audioboom.com/channels/${idChannel}/child_channels`
+			),
+			fetch(`https://api.audioboom.com/channels/${idChannel}/audio_clips`)
+		]);
+
+		let dataChannel = await reqChannel.json();
+		let channel = dataChannel.body.channel;
+
+		let dataAudios = await reqAudios.json();
+		let audioClips = dataAudios.body.audio_clips;
+
+		let dataSeries = await reqSeries.json();
+		let series = dataSeries.body.channels;
+
+		return { channel, audioClips, series };
 	}
 
 	render() {
-		let { channel, audio_clips, channels } = this.props;
-		let clipsContainer = <div>No se encontraron clips </div>;
-		let channelsContainer = <div>No se encontraron series </div>;
-		if (audio_clips.length > 0) {
-			clipsContainer = this.getAudiosContent();
-		}
-		if (channels.length > 0) {
-			channelsContainer = this.getSeriesContent();
-		}
+		const { channel, audioClips, series } = this.props;
 
 		return (
-			<div>
-				<header>PodCasts</header>
-				<h1>{channel.title}</h1>
-				<h2>Ultimos PodCasts</h2>
-				{clipsContainer}
-				<h2>Series</h2>
-				{channelsContainer}
+			<Layout title={channel.title} headName="Back to home">
+				<div
+					className="banner"
+					style={{
+						backgroundImage: `url(${
+							channel.urls.banner_image.original
+						})`
+					}}
+				/>
+				<div className="contain">
+					<div>
+						{series.length > 0 && (
+							<ChannelGrid channels={series}>
+								<h2>Series</h2>
+							</ChannelGrid>
+						)}
+					</div>
 
+					<div>
+						{audioClips.length > 0 && (
+							<PodcastGrid audio_clips={audioClips}>
+								<h2>Ultimos Podcasts</h2>
+							</PodcastGrid>
+						)}
+					</div>
+				</div>
 				<style jsx>{`
-					header{
-						color: #fff;
-						padding 15px;
-						background: #8576ca;
-						text-align: center;
-					}
-					.audio_clips { 
-						display: grid;
-						grid-gap: 25px;
-						padding: 15px;
-						grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-					}
-
-					.clip {
-						display: block;
-						border-radius: 3px;
-						box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
-						margin-bottom: 0.5em;
-					}
-
-					.channel img{
+					.banner {
 						width: 100%;
+						padding-bottom: 25%;
+						background-position: 50% 50%;
+						background-size: cover;
+						background-color: #aaa;
 					}
 
-					h1 { 
+					h1 {
 						font-weight: 600;
-						margin: 15px
+						padding: 15px;
 					}
-
 					h2 {
 						padding: 5px;
-						margin: 15px;
-						font-size: 0.9em;
+						font-size: 1.2em;
 						text-align: center;
-					}
-					p {
-						margin: 15px;
-						font-size: 18px;
-						text-align: left;
-					}
-					`}</style>
-				<style jsx global>{`
-					body {
 						margin: 0;
-						font-family: system-ui;
-						background: #354446;
+					}
+					.contain {
+						display: grid;
+						grid-gap: 15px;
+						padding: 15px;
+						grid-template-areas: "header header header" "sidebar main main";
 					}
 				`}</style>
-			</div>
-		);
-	}
-	getSeriesContent() {
-		return (
-			<div className="channels">
-				{this.props.channels.map(channel => (
-					<div className="channel">
-						<h5>{channel.title}</h5>
-					</div>
-				))}
-			</div>
-		);
-	}
-
-	getAudiosContent() {
-		return (
-			<div className="audio_clips">
-				{this.props.audio_clips.map(clip => (
-					<div className="clip">
-						<h5>{clip.title}</h5>
-					</div>
-				))}
-			</div>
+			</Layout>
 		);
 	}
 }
